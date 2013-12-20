@@ -50,7 +50,7 @@ a:active {
 <body>
 <table width="750" border="0" align="center" cellpadding="5" cellspacing="0">
   <tr>
-    <td bgcolor="#FFFFCC"><div align="center" class="head2"><a name="top"></a>Network Monitor 0.7.0</div></td>
+    <td bgcolor="#FFFFCC"><div align="center" class="head2"><a name="top"></a>Network Monitor 0.7.1</div></td>
   </tr>
   <tr>
     <td>
@@ -71,6 +71,8 @@ a:active {
   <tr>
     <td><p class="normal"><strong><a name="chap1"></a>1) Popis programu </strong></p>
     <p align="justify" class="normal">Jedná se o konzolovou aplikaci, která má k dispozici topologii sítì. Tato struktura je vèetnì rùznıch nastavení uloená v souboru formátu XML (viz. kapitola <a href="#chap3">Konfiguraèní soubor</a>). Network Monitor (dále jen Netmon), naète tyto data do pamìti a poté testuje dostupnost jednotlivıch PC v síti pomocí funkce <em>ping</em>. Po dokonèení této operace bude mít kadé PC definovanı stav. Vıstupem programu je HTML stránka s obrázkem PNG, kde je nakreslena sí v aktuálním stavu. Vısledná stránka se vytváøí pomocí zadané šablony.</p>
+    <p align="justify" class="normal"><strong>Co je nového  ve verzi 0.7.0</strong></p>
+- hostname je konvertován na uppercase
     <p align="justify" class="normal"><strong>Co je nového  ve verzi 0.7.0</strong></p>
     <p align="justify" class="normal"><strong>-</strong> velikost vısledného obrázku je nyní dána poètem a velikostí buòek v horizontálním a vertikálním smìru <br>
       - pøi prvním spuštìní je vygenerován soubor s pøíponou .<em>con</em>, ve kterém jsou uloeny &quot;spojení&quot;. Pøi pøíštím spuštìní se ète z tohoto souboru. Pokud dojde ka jakékoliv zmìnì daného konfinguraèního souboru, je soubor <em>.con</em> generován novı (co chvilku trvá).<br>

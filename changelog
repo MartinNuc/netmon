@@ -1,3 +1,6 @@
+0.7.1:
+- hostname je konvertovan na uppercase
+
 0.7.0:
 - velikost výsledného obrázku je nyní dána poètem a velikostí buòek v horizontálním a vertikálním smìru 
 - pøi prvním spuštìní je vygenerován soubor s pøíponou .con, ve kterém jsou uloženy "spojení". Pøi pøíštím spuštìní se ète z tohoto souboru. Pokud dojde ka jakékoliv zmìnì daného konfinguraèního souboru, je soubor .con generován nový (což chvilku trvá).
