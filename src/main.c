@@ -9,6 +9,7 @@
 #include <string.h>
 #include <malloc.h>
 #include <time.h>
+#include <cctype>
 
 /* added libraries */
 #include "../include/error.h"
@@ -96,6 +97,17 @@ int main(int argc, char* argv[])
 		/* copy it to configuration */
 		conf.np.szMainRouterID = new char[(strlen(szMainRouter)+1)];
 		strcpy(conf.np.szMainRouterID, szMainRouter);
+	}
+	
+	/* make everything uppercase until first dot */
+	for(unsigned int i=0; i < strlen(conf.np.szMainRouterID); i++)
+	{
+		if (conf.np.szMainRouterID[i] == '.')
+		{
+			break;
+		}
+		
+		conf.np.szMainRouterID[i] = toupper(conf.np.szMainRouterID[i]);
 	}
 	
 	/* no explicit config was defined */
