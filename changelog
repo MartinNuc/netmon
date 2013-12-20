@@ -1,0 +1,158 @@
+0.7.0:
+- velikost vısledného obrázku je nyní dána poètem a velikostí buòek v horizontálním a vertikálním smìru 
+- pøi prvním spuštìní je vygenerován soubor s pøíponou .con, ve kterém jsou uloeny "spojení". Pøi pøíštím spuštìní se ète z tohoto souboru. Pokud dojde ka jakékoliv zmìnì daného konfinguraèního souboru, je soubor .con generován novı (co chvilku trvá).
+- linky jsou nyní vytváøeny zcela libovolnì (pøímé i nìkolikanásobnì lomené èáry apod.) 
+- poøadí textu na routerech je dáno poøadím vlastností "name", "ip" a "comment" v konfiguraèním souboru 
+- nová grafika pro linky a routery (typ routeru má nyní styl "shadow" kterım lze zapnout stínování) 
+- linka má novı atribut "underconst" kterı linky oznaèí jako ve vıstabì èili modrou barvou 
+- pokud obsahuje router typ, kterı nebyl definován, je vypsána chyba a program se ukonèí 
+- pøedìlán systém paralelních linek 
+- sdruená zaøízení, viz.{ èást 8 dokumentace}
+- podpora znaku ampersand v xml souboru, viz. {èást 6 dokumentace} 
+- zmìny v konfiguraèním souboru jsou pospány v èásti {Konfiguraèní soubor}. 
+
+0.6.8:
+- router mùe mít nyní definováno více síovıch rozhraní
+
+0.6.7:
+- pridan parametr mainrouter ktery pretizi nastaveni z konfigu
+
+- opravena chyba v pripade kdy neni definovana cesta k vystupnim souborum:
+  * pokud neni definovany vystup HTML, pouzije se implicitne 'index.html'       v miste odkud je pousten netmon.
+  * pokud neni definovany vystup PNG, pouzije se jmeno 'result.png' a         obrazek se ulozi primo k souboru HTML. Odkaz ve vystupni strance bude       relativni.
+
+
+0.6.6:
+- Vytvoreno vlastni kresleni prerusovane cary, tak ze uz to funguje
+  i u cas, ktery jsou silnejsi nez 1 px. GD nekresli moc pekne
+  (viz. zakonceni car apod.).
+
+- Dalsi optimalizace kodu.
+
+- Opravena chyba pri generovani souradnic na odkaz sikme cary.
+
+- Umozneno kresleni paralelnich cest. Kdyz jsou definovany cesty mezi stejnymi dvema routery, cesty se nakresli vedle sebe. Max. dve cesty.
+
+- Pridan tag linetype definujici typ cary mezi routery. 
+  Typ cary ma atributy: ID, sirka v px, popis (cili title).
+  Typ cary je identifikovan podle ID (ltype)
+  Musi byt definovan alespon jeden typ linky (default).
+
+
+0.6.5
+- upraven algoritmus na vypocet barvy linky pri zatezi
+
+
+0.6.4
+- opravena chyba s obcasnym vykreslenim cervene linky jako modre.
+  Problem byl v tom, ze pinghost vraci trochu jine hodnoty nez
+  Windows ping.
+
+
+0.6.3
+- zmenen algoritmus na vypocet sirky cary
+- nova funkce multiap:
+- umoznuje pripojit na jednu antenku dva odkazy
+  na statistiky, dve essid a dva udaje o zatezi.
+- tag accesspoint je zrusen a misto nej je
+  accesspointtype ktery nabyva hodnot 0-2 kde
+    0 - je ZADNE AP. 
+    1 - znamena normalni AP s jednou antenou.
+    2 - je AP s dvema antenkama atd.
+  
+  Udaje pro druhou antenku se definuji tagy:
+    <ap2url> - definuje url na statistiky
+    <essid2> - definuje essid druhe site
+    <ap2load> - v souboru zatizeni definuje zatizeni druheho rozhrani
+- novy tag <ap2pngpath> kterym se nadefinuje novy obrazek
+  pro multiap.
+
+
+0.6.2
+- tag 'location' byl prejmenovan na 'comment'
+- predelany typy linek a jejich popisky podle nasledujici tabulky:
+        ID      Popisek
+  	0 	11MBit HD Wifi
+	1 	10Mbit FD Ronja
+	2	20Mbit FD 10,5GHz Wireless
+	3 	100MBit FD Cable
+	4 	Gigabit FD Cable
+- opravena brutalni chyba, pokud uzivatel definoval linku k neexistujicimu
+  routeru.
+- novy atribut typu zarizeni <switch> ktery muze nabyvat hodnoty true
+  nebo false. Pokud je tento atribut pritomny s hodnotou true, dany
+  router se nebude primo pingovat, ale bude se chovat na siti transparentne
+  a linka vedouci DO zarizeni je vzdy zelena.
+
+
+0.6.1
+- kontrola TT fontu pokud je font nejak poskozeny nebo nastane jina chyba, tato
+  chyba se nyni zobrazi.
+- cesty k souborum anteny a eth segmentu jsou nyni umisteny v konfiguracnim souboru
+  pod tagy <appngpath> a <lanpngpath>.
+
+
+26.9. 2004 0.6.0
+- kontrola konfig file pred spustenim testu, lepsi vypisy chyb pri parsingu.
+- nyni jde pouzit TT fonty pokud je definovan deffont. Viz prilozena dokumentace.
+- jde nastavit velikost a barva pisma u routertype.
+- predelana ikona na antenku, pridana nova ikona na eth segment.
+- pridany nove tagy routeru: underconst, essid, accesspoint, lansegment.
+- zcela odstranen atribut rtitle. Na roureru se nyni nezobrazuje nic.
+- tag underconst zpusobi ze dany router je mimo provoz a vsechny
+  linky k nemu vedouci jsou modry.
+- tag essid napise title na obrazku antentky.
+- tag accesspoint (true/false) zpusobi vykresleni antenky bez ohledu na apurl.
+- tag lansegment (true/false) zpusobi vykresleni eth segment bez ohledu na lanurl.
+- cary mezi routery jsou nyni prerusovane, pokud je spojeni preruseno. Barva znaci vytizeni.
+  Cervena znamena, ze linka je mimo provoz. Vytizeni je vyznaceno ve skale zelene:
+  svetle zelena, linka nezatizena. cerna, linka zcela zatizena.
+- parametr test zpusobi, ze se preskoci pingovani site. provede se pouze test
+  veci potrebnych ke spusteni pingovani.
+- zcela byla odstranena funkce skeleton.
+- odstranen parametr DO, misto toho pribyl parametr -v (verbose), ktery funguje presne
+  naopak.
+- nova definice linek:
+   0 - Slow wifi? (fuj wtf.. reserva)
+   1 - 11Mbit Wifi
+   2 - 10Mbit Full Duplex Ronja
+   3 - 100Mbit Ethernet
+   4 - Gigabit Ethernet
+- soubor vytizeni kde jsou definovany vytizeni linek, AP a eth segmentu. Pokud
+  vytizeni neni k danemu objektu definovano, zcela se ignoruje. Soubor zatizeni 
+  neni povinny pro spusteni testu.
+- kontrola potrebnych obrazku ke spusteni testu.
+- cesta k souboru source je nyni definovana jen a pouze v konfik filu. pokud neni,
+  je to fatalni chyba a k testovani nedojde.
+
+
+
+
+20041001 - Version 0.5.2
+- added title element to the router in config file -> in output it's title="___TITLE___" in area tag
+- added title element to the line in config file -> in output it's title="___TITLE___" in area tag
+- source.html now uses special formating strings: %%DATE%%, %%AREA_MAP%%, %%SRCPIC%%, %%MAINROUTER%% 
+  and %%VERSION%%. Each of this strings are replaced by propriate information. %%SRCPIC%% is
+  path to source image of the network. %%AREA_MAP%% is replaced by map of the links.
+  %%DATE%% is replaced by current time and %%MAINROUTER%% is replaced by name of the main router
+  defined in config file. DO NOT USE printf() formating chars (%s, %d etc.) in the source file!!!
+- added date and time of generation by the smallest font to the right bottom corner of image
+- if there is no link for area, write area to html but with nohref tag, but with title
+- changed alt tag of area in output html to router name (and for line and AP so well)
+
+
+20031212 - Version 0.5.1
+- added support for router border with definable width and color
+- added changeable color properties for fonts
+- main router can be explicitly defined by mainrouter tag
+- router information can be empty
+- if user defines non-existing router type, default is set
+
+20030812
+- added new parameter --skeleton for skeleton generation
+
+20031411
+- added new cmd parameters (use --help)
+- ping error codes edited
+- user now can change teplate HTML file using cmd parameter
+- fixed problem with ping timeout

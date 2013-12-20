@@ -1,0 +1,10 @@
+Netmon, release 0.7.0
+30.5. 2006
+
+Directories:
+doc - program documentation in czech
+include - includes
+res - common resources, pictures for AP or ethernet segmets etc.
+src - source codes
+
+Just run make!

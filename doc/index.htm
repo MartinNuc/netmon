@@ -1,0 +1,642 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Network Monitor</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1250">
+<style type="text/css">
+<!--
+.normal {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+}
+body {
+	background-color: #FFFF99;
+}
+.head2 {
+	font-size: 18px;
+	font-family: Arial, Helvetica, sans-serif;
+}
+.head1 {
+	font-size: 24px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bolder;
+}
+a:link {
+	color: #CC0000;
+	text-decoration: none;
+}
+a:visited {
+	text-decoration: none;
+	color: #CC9900;
+}
+a:hover {
+	text-decoration: none;
+	color: #0000CC;
+}
+a:active {
+	text-decoration: none;
+}
+.code {
+	font-family: "Courier New", Courier, mono;
+	font-size: 12px;
+}
+.style3 {font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: bold; }
+.style4 {font-family: "Courier New", Courier, mono}
+-->
+</style>
+</head>
+
+<body>
+<table width="750" border="0" align="center" cellpadding="5" cellspacing="0">
+  <tr>
+    <td bgcolor="#FFFFCC"><div align="center" class="head2"><a name="top"></a>Network Monitor 0.7.0</div></td>
+  </tr>
+  <tr>
+    <td>
+      <ol>
+        <li class="normal"><a href="#chap1">Popis programu</a></li>
+        <li class="normal"><a href="#chap2">Použití</a></li>
+        <li class="normal"><a href="#chap3">Konfigurační soubor</a></li>
+      
+        <li class="normal"><a href="#chap4">Paralelní linky</a></li>
+        <li class="normal"><a href="#chap5">Router s více rozhraními </a></li>
+        <li class="normal"><a href="#chap6">Ampersand v XML </a></li>
+        <li class="normal"><a href="#chap07">Křížení linek</a></li>
+        <li class="normal"><a href="#chap08">Definice sdružených zařízení</a></li>
+        <li class="normal">Zobrazení zatížení linek (není podporováno ve verzi 0.7.0)<br>
+        </li>
+    </ol>    </td>
+  </tr>
+  <tr>
+    <td><p class="normal"><strong><a name="chap1"></a>1) Popis programu </strong></p>
+    <p align="justify" class="normal">Jedná se o konzolovou aplikaci, která má k dispozici topologii sítě. Tato struktura je včetně různých nastavení uložená v souboru formátu XML (viz. kapitola <a href="#chap3">Konfigurační soubor</a>). Network Monitor (dále jen Netmon), načte tyto data do paměti a poté testuje dostupnost jednotlivých PC v síti pomocí funkce <em>ping</em>. Po dokončení této operace bude mít každé PC definovaný stav. Výstupem programu je HTML stránka s obrázkem PNG, kde je nakreslena síť v aktuálním stavu. Výsledná stránka se vytváří pomocí zadané šablony.</p>
+    <p align="justify" class="normal"><strong>Co je nového  ve verzi 0.7.0</strong></p>
+    <p align="justify" class="normal"><strong>-</strong> velikost výsledného obrázku je nyní dána počtem a velikostí buňek v horizontálním a vertikálním směru <br>
+      - při prvním spuštění je vygenerován soubor s příponou .<em>con</em>, ve kterém jsou uloženy &quot;spojení&quot;. Při příštím spuštění se čte z tohoto souboru. Pokud dojde ka jakékoliv změně daného konfinguračního souboru, je soubor <em>.con</em> generován nový (což chvilku trvá).<br>
+      - linky jsou nyní vytvářeny zcela libovolně (přímé i několikanásobně lomené čáry apod.) <br>
+      - pořadí textu na routerech je dáno pořadím vlastností &quot;name&quot;, &quot;ip&quot; a &quot;comment&quot; v konfiguračním souboru <br>
+      - nová grafika pro linky a routery (typ routeru má nyní styl &quot;shadow&quot; kterým lze zapnout stínování) <br>
+      - linka má nový atribut &quot;underconst&quot; který linky označí jako ve výstabě čili modrou barvou <br>
+      - pokud obsahuje router typ, který nebyl definován, je vypsána chyba a program se ukončí
+      <br>
+      - předělán systém paralelních linek <br>
+      - sdružená zařízení, viz.<a href="#chap08"> část 8 </a><br>
+      - podpora znaku ampersand v xml souboru, viz. <a href="#chap6">část 6</a>      <br>
+      - změny v konfiguračním souboru jsou pospány v části <a href="#chap3">Konfigurační soubor</a>. </p>
+    <p align="justify" class="normal">Změny jednotlivých verzí jsou zapsány v souboru <em>changelog</em>. Pokud budete mít probémy s instalací, kontaktujte mě na <strong>ICQ</strong>: 93289181. </p>
+    <p align="justify" class="normal"><strong>Ke stáhnutí (aktuální verze 0.7.0)</strong></p>
+    <p align="justify" class="normal">Spustitelný program pod Windows - <a href="download/winbin.zip">winbin.zip</a> (1.2 MB)<br>
+      Zdrojové kódy zkompilovatelné pod VS.NET 2003 - <a href="download/winsrc.zip">winsrc.zip</a> (900 kb)<br>
+      Zdrojové kódy pro GCC (Linux) - <a href="download/netmon_v0-6-8.tgz">netmon_v0-7-0.tgz</a> (200 kb) </p>
+    <p align="justify" class="normal">Nutno podotknout, že zdrojové kdy jsou identické, jen jsou trochu jinak uspořádané. Pod Linuxem je třeba mít nainstalované knihovny <strong>Expat</strong> (XML Parser), <strong>GD</strong> (grafická knihovna) a <strong>Ping</strong> (program pinghost). </p>
+    <p align="justify" class="normal">V balíčku najdete testovací konfigurační soubory <strong>config.xml</strong>. Náhled sítě:</p>
+    <p align="justify" class="normal"><img src="img/result.png" width="350" height="300" border="1"> </p>
+    <p align="justify" class="normal">Netmon je freeware. To znamená, že ho můžete šířit a dál upravovat pod licencí GNU General Public License. 
+    </p>    <p align="justify" class="normal"><a href="#top">Zpět</a></p></td>
+  </tr>
+  <tr>
+    <td><p class="normal"><strong><a name="chap2"></a>2) Použití </strong></p>
+      <p align="justify" class="normal">Nejprve je třeba správně vytvořit datový soubor s konfigurací sítě (viz. kapitola Konfigurace sítě). Dále je třeba mít připraven zdrojový soubor HTML stránky, který slouží jako šablona výstupního souboru. </p>
+      <p align="justify" class="normal">Program lze spustit z příkazové řádky příkazem:</p>
+      <p align="justify" class="normal"><strong>C:\Nemon\Netmon.exe --v --config=configurace.xml</strong></p>
+      <p align="justify" class="normal">Volitelné parametry:</p>
+    <table width="505" border="1" cellpadding="3" cellspacing="0">
+      <tr bgcolor="#CCCCFF" class="normal">
+        <th width="161" scope="col">Název</th>
+        <th width="326" scope="col">Význam</th>
+      </tr>
+      <tr class="normal">
+        <td><p><strong>--v</strong></p>          </td>
+        <td><em>Verbose.</em> Zobrazí podrobné informace v průběhu testování sítě.</td>
+      </tr>
+      <tr class="normal">
+        <td><strong>--mainrouter=router</strong></td>
+        <td>Přetíží nastavení &quot;mainrouter&quot; v konfiguračním souboru. </td>
+      </tr>
+      <tr class="normal">
+        <td><strong>--config=file.xml</strong></td>
+        <td>Specifikuje vlastní konfigurační soubor, jinak se použije implicitně soubor &quot;/opt/netmon/config.xml&quot;.</td>
+      </tr>
+      <tr class="normal">
+        <td><strong>--t | --test </strong></td>
+        <td>Netmon pouze zkontroluje konfigurační soubor a vrátí výsledek testu tzn. že netestuje síť ani negenuruje výslednou mapu. </td>
+      </tr>
+      <tr class="normal">
+        <td><strong>--sl</strong></td>
+        <td>Potlačí vykreslování linek mezi routery. </td>
+      </tr>
+      <tr class="normal">
+        <td><strong>--help | --h </strong></td>
+        <td>Zobrazí popis parametrů. </td>
+      </tr>
+    </table>    
+    <p><span class="normal"><a href="#top">Zpět</a></span></p></td>
+  </tr>
+  <tr>
+    <td><p class="normal"><strong><a name="chap3"></a>3) Konfigurační soubor </strong></p>
+      <p align="justify" class="normal">Data sítě jsou uložena ve formátu XML. V tomto souboru jsou uloženy tyto informace:</p>
+      <ul>
+        <li class="normal">nastavení chování programu</li>
+        <li class="normal">cesty k potřebným souborům </li>
+        <li class="normal">grafická podoba různých typů zařízení na síti</li>
+        <li class="normal">seznam zařízení</li>
+        <li class="normal">seznam sdružených zařízení </li>
+        <li class="normal">seznam linek mezi nimi</li>
+      </ul>
+      <p class="normal"><strong>a) Nastavení chování programu</strong></p>
+      <table width="529" border="1" cellpadding="3" cellspacing="0">
+        <tr bgcolor="#00CCFF" class="normal">
+          <th width="113" scope="col">Název tagu </th>
+          <th width="398" scope="col">Význam</th>
+          <th width="398" scope="col">Povinný a výchozí hodnota</th>
+        </tr>
+        <tr class="normal">
+          <td class="code">horizontal_cells</td>
+          <td>Počet buňek mřížky ve vodorovném směru. </td>
+          <td><div align="center">ano</div></td>
+        </tr>
+        <tr class="normal">
+          <td class="code">vertical_cells</td>
+          <td>Počet buňek mřížky ve svislém směru. </td>
+          <td><div align="center">ano</div></td>
+        </tr>
+        <tr class="normal">
+          <td class="code">cell_width</td>
+          <td>Šířka jedné buňky v pixelech.</td>
+          <td><div align="center">ne, 110 </div></td>
+        </tr>
+        <tr class="normal">
+          <td class="code">cell_height</td>
+          <td> Výška jedné buňky v pixelech.</td>
+          <td><div align="center">ne, 70 </div></td>
+        </tr>
+        <tr class="normal">
+          <td class="code">deffont</td>
+          <td>Definuje <strong>plnou</strong> cestu k TT fontu, který je použit při generování výsledného obrázku. Pokud tento atribut není definován, použijí se nativní fonty knihovny GD (a to i v případě, že daný font není nalezen). </td>
+          <td><div align="center">ne, použije se výchozí fonty knihovny GD </div></td>
+        </tr>
+        <tr class="normal">
+          <td class="code">maxpingattempts</td>
+          <td>Počet pokusů při testování zařízení na síti. Doporučená hodnota tohoto atributu je 2. Nedostupné routery se tak zbytečně netestují 3x. </td>
+          <td><div align="center">ne, 3x </div></td>
+        </tr>
+        <tr class="normal">
+          <td class="code">pingtimeout</td>
+          <td>Maximální doba čekání na odpověď v milisekundách. Záleží na typu sítě. Na rychlé metalické síti může být hodnota nižší, druhý extrém je wifi, kde by hodnota neměla být menší než 2000 milisekund. </td>
+          <td><div align="center">ne, 1000 ms </div></td>
+        </tr>
+        <tr class="normal">
+          <td class="code">mainrouter</td>
+          <td>Jméno hlavního routeru. Z toho routeru se pak provádí monitoring a toto jméno je i uvedeno ve výsledném HTML dokumentu. V šabloně je vloženo místo tagu %%MAINROUTER%%.</td>
+          <td><div align="center">ne, musí být nastaven alespoň parametrem, jinak <em>netmon</em> skončí </div></td>
+        </tr>
+      </table>      
+      <br>      <table width="417" height="159" border="1" cellpadding="5" cellspacing="0" bgcolor="#FFFFFF">
+        <tr>
+          <td><span class="code">&lt;configuration&gt; <br>
+&nbsp;&nbsp;&nbsp;&lt;!-- graphics options --&gt;<br>
+&nbsp;&nbsp;&nbsp;&lt;imagesize&gt;770 530&lt;/imagesize&gt;<br>
+&nbsp;&nbsp;&nbsp;&lt;deffont&gt;c:/windows/fonts/arial.ttf&lt;/deffont&gt;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&lt;!-- ping options --&gt;<br>
+&nbsp;&nbsp;&nbsp;&lt;maxpingattempts&gt;2&lt;/maxpingattempts&gt;<br>
+&nbsp;&nbsp;&nbsp;&lt;pingtimeout&gt;2000&lt;/pingtimeout&gt;<br>
+&nbsp;&nbsp;&nbsp;&lt;mainrouter&gt;YOUR_MAIN_ROUTER&lt;/mainrouter&gt;<br>
+<br>
+...pokračuje dalším nastavením... 
+</span></td>
+        </tr>
+      </table>
+      <p class="normal"><strong>b) Cesty k potřebným souborům </strong></p>
+      <table width="529" border="1" cellpadding="3" cellspacing="0">
+        <tr bgcolor="#00CCFF" class="normal">
+          <th width="85" scope="col">Název tagu </th>
+          <th width="426" scope="col">Význam</th>
+          <th width="426" scope="col">Povinný a výchozí hodnota</th>
+        </tr>
+        <tr class="normal">
+          <td class="code">reshtmlpath</td>
+          <td>Cesta a název souboru výsledné HTML stránky.</td>
+          <td><div align="center">ne, &quot;index.htm&quot; </div></td>
+        </tr>
+        <tr class="normal">
+          <td class="code">respngpath</td>
+          <td>Cesta a název PNG obrázku se zobrazením stavu sítě. Tento odkaz je pak vložen do výsledného HTML dokumentu místo tagu %%SRCPIC%%.</td>
+          <td><div align="center">ne, &quot;result.png&quot; </div></td>
+        </tr>
+        <tr class="normal">
+          <td><span class="code">sourcepath</span></td>
+          <td>Cesta a název šablony HTML stránky. Datum, obrázek, mapa, hlavní router a verze  používají speciální tagy: %%DATE%%, %%AREA_MAP%%, %%SRCPIC%%, %%MAINROUTER%% a %%VERSION%%. Tyto znaky jsou při generování nahrazeny správnými hodnotami. Hlavní router je definován v konfiguračním souboru.</td>
+          <td><div align="center">ano</div></td>
+        </tr>
+        <tr class="normal">
+          <td><span class="code">loadfile</span></td>
+          <td>Cesta souboru, ve kterém jsou uložena data zatížení linek, AP a ethernetového segmentu. Struktura tohoto souboru je popsána dále. </td>
+          <td><div align="center">ne, zobrazení zatížení bude ignorováno </div></td>
+        </tr>
+        <tr class="normal">
+          <td class="style4"> appngpath</td>
+          <td>Cesta k souboru antény u AP s jednou anténou. </td>
+          <td><div align="center">ano</div></td>
+        </tr>
+        <tr class="normal">
+          <td class="style4"> appng2path</td>
+          <td>Cesta k souboru antény u AP se dvěma sektory. </td>
+          <td><div align="center">ano</div></td>
+        </tr>
+        <tr class="normal">
+          <td class="style4"> lanpngpath</td>
+          <td>Cesta k souboru obrázku označující ethernetový segment. </td>
+          <td><div align="center">ano</div></td>
+        </tr>
+      </table>
+      <br>
+      <table width="417" height="134" border="1" cellpadding="5" cellspacing="0" bgcolor="#FFFFFF">
+        <tr>
+          <td class="code">&nbsp;&nbsp;&lt;paths&gt;<br>
+&nbsp;&nbsp;&nbsp;&lt;!-- result's paths --&gt;<br>
+&nbsp;&nbsp;&nbsp;&lt;reshtmlpath&gt;result.html&lt;/reshtmlpath&gt;<br>
+&nbsp;&nbsp;&nbsp;&lt;respngpath&gt;result.png&lt;/respngpath&gt;<br><br>
+&nbsp;&nbsp;&nbsp;&lt;!-- source's paths --&gt;<br>
+&nbsp;&nbsp;&nbsp;&lt;sourcepath&gt;source.html&lt;/sourcepath&gt;<br>
+&nbsp;&nbsp;&nbsp;&lt;loadfile&gt;load.xml&lt;/loadfile&gt;<br>
+&nbsp;&nbsp;&lt;/paths&gt;<br>
+&lt;/configuration&gt;</td>
+        </tr>
+      </table>      
+      <p class="style3">c) Sekce routertypes - typy zařízení na sítí</p>
+      <table width="568" border="1" cellpadding="3" cellspacing="0">
+        <tr bgcolor="#00CCFF" class="normal">
+          <th width="77" scope="col">Název tagu </th>
+          <th width="374" scope="col">Význam</th>
+          <th width="91" scope="col">Povinný a výchozí hodnota</th>
+        </tr>
+        <tr class="normal">
+          <td class="code">rid</td>
+          <td>Unikátní ID typu, pomocí kterého se na typ odkazujete. </td>
+          <td>ano</td>
+        </tr>
+        <tr class="normal">
+          <td class="code">dimension</td>
+          <td>Rozměr boxu zařízení na výsledné mapě. </td>
+          <td>ne, 68x38 </td>
+        </tr>
+        <tr class="normal">
+          <td><span class="code">color</span></td>
+          <td>Barva boxu na výsledné mapě. Formát je RGB: R G B. </td>
+          <td>ne, černá </td>
+        </tr>
+        <tr class="normal">
+          <td><span class="code">information</span></td>
+          <td><p>Další příznaky zařízení: <strong>ip</strong>, <strong>location</strong>, <strong>name</strong>. Pokud jsou tyto příznaky přítomny, na boxu se zobrazí příslušná informace. Kromě toho můžete definovat barvu a velikost popisku a to v následujícím formátu. Např: <em>comment(R, G, B, S)</em>, kde R, G a B jsou barevné složky a S je velikost v bodech (parametr S není povinný). Pokud je S záporné, vybírají se nativní fonty knihovny GD v rozmezí 0 až -4. V kladných hodnotách se použije TT font pokud je definován, v opačném případě se opět vybere nativní font.<br>
+            Příznak <strong>border</strong> zapne kolem boxu rámeček. Parametry mají následující formát: (W, R, G, B), kde W je šířka čáry rámečku a R, G a B jsou barevné složky.</p>          </td>
+          <td>ne</td>
+        </tr>
+        <tr class="normal">
+          <td><span class="code">shadow</span></td>
+          <td>Pokud je tato hodnota <em>true</em>, nastaví pěkný stín u krabiček zařízení. </td>
+          <td>ne, false </td>
+        </tr>
+        <tr class="normal">
+          <td><span class="code">switch</span></td>
+          <td>Pokud je tento příznak nastaven na <em>true</em>, bude tato třída zařízení brána jako switch na síti a není možná určit, zda-li takové zařízení žije, tudíž linky k takovému zařízení budou vždy zelené.</td>
+          <td>ne, false </td>
+        </tr>
+      </table>
+      <br>
+      <table width="601" height="155" border="1" cellpadding="5" cellspacing="0" bgcolor="#FFFFFF">
+        <tr>
+          <td width="587" height="153" class="code"><span class="code">&lt;routertype&gt;<br>
+&nbsp;&nbsp;&lt;rid&gt;0&lt;/rid&gt;<br>
+&nbsp;&nbsp;&lt;!-- dimensions of the router box --&gt;<br>
+&nbsp;&nbsp;&lt;dimension&gt;70 40&lt;/dimension&gt;<br>
+&nbsp;&nbsp;&lt;!-- RGB format --&gt;<br>
+&nbsp;&nbsp;&lt;color&gt;84 180 229&lt;/color&gt; <br>
+&nbsp;&nbsp;&lt;!-- text on the box --&gt;<br>
+&nbsp;&nbsp;&lt;information&gt;ip location(128,100,50) name(0,0,0,5) border(1,0,0,0)&lt;/information&gt;<br>
+&lt;/routertype&gt; </span></td>
+        </tr>
+      </table>      
+      <p class="style3">d) Sekce linetypes - typy linek na sítí</p>
+      <table width="529" border="1" cellpadding="3" cellspacing="0">
+        <tr bgcolor="#00CCFF" class="normal">
+          <th width="85" scope="col">Název tagu </th>
+          <th width="426" scope="col">Význam</th>
+          <th width="426" scope="col">Povinný a výchozí hodnota</th>
+        </tr>
+        <tr class="normal">
+          <td class="code">lid</td>
+          <td>Unikátní ID typu, pomocí kterého se na typ odkazujete. </td>
+          <td><div align="center">ano</div></td>
+        </tr>
+        <tr class="normal">
+          <td class="code">width</td>
+          <td>Šířka čáry v pixelech.</td>
+          <td><div align="center">ne, 3 </div></td>
+        </tr>
+        <tr class="normal">
+          <td><span class="code">linedesc</span></td>
+          <td>Popisek, který se zobrazí jako tooltip na lince. </td>
+          <td><div align="center">ne, prázdný řetězec</div></td>
+        </tr>
+      </table>
+      <br>
+      <table width="601" height="155" border="1" cellpadding="5" cellspacing="0" bgcolor="#FFFFFF">
+        <tr>
+          <td width="587" height="153" class="code">&lt;linetype&gt;<br>
+&nbsp;&nbsp;&lt;lid&gt;0&lt;/lid&gt;
+&nbsp;<br>
+&nbsp;&nbsp;&lt;width&gt;2&lt;/width&gt;
+&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&lt;linedesc&gt;100Mbit&lt;/linedesc&gt; <br>
+&lt;/linetype&gt; </td>
+        </tr>
+      </table>      
+      <p class="normal"><strong>e) Seznam zařízení na síti </strong></p>
+      <table width="529" border="1" cellpadding="3" cellspacing="0">
+        <tr bgcolor="#00CCFF" class="normal">
+          <th width="85" scope="col">Název tagu </th>
+          <th width="426" scope="col">Význam</th>
+          <th width="426" scope="col">Povinný a výchozí hodnota</th>
+        </tr>
+        <tr class="normal">
+          <td class="code">name</td>
+          <td>Název zařízení, které se zobrazí na boxu. </td>
+          <td><div align="center">ano</div></td>
+        </tr>
+        <tr class="normal">
+          <td class="code">rtype</td>
+          <td>ID typu routeru definované výše v souboru. </td>
+          <td><div align="center">ano</div></td>
+        </tr>
+        <tr class="normal">
+          <td><span class="code">position</span></td>
+          <td>Pozice na mapě v souřadnicích mřížky. </td>
+          <td><div align="center">ano</div></td>
+        </tr>
+        <tr class="normal">
+          <td><span class="code">ip</span></td>
+          <td>IP adresa, na kterou se zařízení testuje. Tímto tagem nadefinujete výchozí rozhraní. Tento tag můžete vynechat a výchozí rozhraní nastavit v sekci <strong>interfaces</strong>. Popis v <a href="#chap5">části 5</a>.</td>
+          <td><div align="center">ne</div></td>
+        </tr>
+        <tr class="normal">
+          <td><span class="code">comment</span></td>
+          <td><p>Dodatečná informace o zařízení primárně určená pro umístění. </p></td>
+          <td><div align="center">ne, prázdný řetězec</div></td>
+        </tr>
+        <tr class="normal">
+          <td><span class="code">routerurl</span></td>
+          <td>Odkaz, který bude umístěn na ploše boxu zařízení. </td>
+          <td><div align="center">ne, prázdný řetězec</div></td>
+        </tr>
+        <tr class="normal">
+          <td><span class="code">lansegment</span></td>
+          <td>Parametr určí, zda-li je zařízení obsahuje LAN rozhraní a nakreslí značku vedle boxu. Může nabývat <em>true</em> nebo <em>false</em> hodnot. </td>
+          <td><div align="center">ne, false </div></td>
+        </tr>
+        <tr class="normal">
+          <td><span class="code">lanurl</span></td>
+          <td>Odkaz, který bude umístěn na značku LAN rozhraní v případě, že předchozí parametr je <em>true</em>. </td>
+          <td><div align="center">ne, prázdný řetězec</div></td>
+        </tr>
+        <tr class="normal">
+          <td class="style4">accesspointtype</td>
+          <td>Parametr určí, zda-li je zařízení je AP a nakreslí značku vedle boxu. Může nabývat <em>0</em> pro router bez AP, 1 pro AP s jednou anténou a 2 pro AP se dvěma sektory. </td>
+          <td><div align="center">ne, 0 </div></td>
+        </tr>
+        <tr class="normal">
+          <td><span class="code">apurl</span></td>
+          <td>Odkaz, který bude umístěn na značku AP rozhraní v případě, že předchozí parametr je <em>true</em>. </td>
+          <td><div align="center">ne, prázdný řetězec</div></td>
+        </tr>
+        <tr class="normal">
+          <td><span class="style4">underconst</span></td>
+          <td>Tento tag nastavený na <em>true</em> způsobí, že daný router se bude pokládat explicitně za mimo provoz a všechny linky k němu vedoucí půjdou do modra. </td>
+          <td><div align="center">ne, false </div></td>
+        </tr>
+        <tr class="normal">
+          <td><span class="code">essid</span></td>
+          <td>ID sítě, tento řetězec bude umístěn na značku AP. </td>
+          <td><div align="center">ne, prázdný řetězec</div></td>
+        </tr>
+        <tr class="normal">
+          <td><span class="code">ap2url</span></td>
+          <td>Platí pouze u AP se dvěma sektory. Definuje odkaz na druhý sektor. </td>
+          <td><div align="center">ne, prázdný řetězec</div></td>
+        </tr>
+        <tr class="normal">
+          <td><span class="code">essid</span>2</td>
+          <td>Platí pouze u AP se dvěma sektory. Definuje ESSID druhého sektoru.</td>
+          <td><div align="center">ne, prázdný řetězec</div></td>
+        </tr>
+        <tr class="normal">
+          <td class="code">interfaces</td>
+          <td>umožňuje definovat více rozhraní, podrobný popis je v <a href="#chap5">části 5 </a></td>
+          <td><div align="center">ne, prázdný řetězec</div></td>
+        </tr>
+      </table>
+      <p class="normal">Kromě těchto atributů má každé zařízení definováno unikátní ID v rámci konfiguračního souboru. Pomocí tohoto ID se na router můžeme odkazovat z definice linky (viz. dále). Toto ID je přímo v tagu <strong>router</strong> jako <strong>routerID</strong>. </p>
+      <table width="601" height="155" border="1" cellpadding="5" cellspacing="0" bgcolor="#FFFFFF">
+        <tr>
+          <td width="587" height="153" class="code">&lt;router routerID=&quot;JMENOZARIZENI&quot;&gt;<br>
+&nbsp;&nbsp;&lt;name&gt;JMENOZARIZENI&lt;/name&gt;<br>
+ &nbsp;&nbsp;&lt;rtype&gt;2&lt;/rtype&gt;<br>
+&nbsp;&nbsp;&lt;ip&gt;10.26.128.41&lt;/ip&gt;<br>
+&nbsp;&nbsp;&lt;location&gt;LOKACE&lt;/location&gt;<br>
+&nbsp;&nbsp;&lt;routerurl&gt;http://www.apweb.cz/&lt;/routerurl&gt;
+&nbsp;&nbsp;
+&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&lt;position&gt;35 117&lt;/position&gt;<br>
+&nbsp;&nbsp;&lt;lansegment&gt;true&lt;/lansegment&gt;<br>
+&nbsp;&nbsp;&lt;lanurl&gt;&lt;/lanurl&gt;<br>
+&nbsp;&nbsp;&lt;<span class="style4">accesspointtype</span>&gt;1&lt;/accesspoint&gt;<br>
+&nbsp;&nbsp;&lt;apurl&gt;&lt;/apurl&gt;<br>
+ &nbsp;&nbsp;&lt;essid&gt;ESSID AP&lt;/essid&gt;
+&nbsp;&nbsp;<br>
+&lt;/router&gt;</td>
+        </tr>
+      </table>      
+      <p class="normal"><strong>f) Seznam linek mezi zařízeními</strong></p>
+      <table width="529" border="1" cellpadding="3" cellspacing="0">
+        <tr bgcolor="#00CCFF" class="normal">
+          <th width="85" scope="col">Název tagu </th>
+          <th width="426" scope="col">Význam</th>
+          <th width="426" scope="col">Povinný a výchozí hodnota</th>
+        </tr>
+        <tr class="normal">
+          <td class="code">ltype</td>
+          <td><p>ID linky, linky se definují pomocí tagu linetype (viz. výše). </p>          
+          </td>
+          <td><div align="center">ano</div></td>
+        </tr>
+        <tr class="normal">
+          <td class="code">lineurl</td>
+          <td>Odkaz, který je umístěn na lince. Může odkazovat třeba na statistiky apod. </td>
+          <td><div align="center">ne, prázdný řetězec </div></td>
+        </tr>
+        <tr class="normal">
+          <td><span class="style4">ltitle</span></td>
+          <td>Titulek, který je zobrazen na lince. Pokud není tento parametr zadán, nastaví se implicitní titulek (viz. tabulka výše). </td>
+          <td><div align="center">ne, prázdný řetězec </div></td>
+        </tr>
+        <tr class="normal">
+          <td class="style4">underconst</td>
+          <td>Tento příznak (hodnota true) zaručí, že linka bude explicitně modrá. Může například vyjadřovat, stav trvale linky mimo provoz nebo ve výstavbě. </td>
+          <td><div align="center">ne, false </div></td>
+        </tr>
+      </table>
+      <p class="normal">Linka obsahuje atributy, kterými se odkazuje na zařízení, které spojuje. Tyto ID jsou definovány výše u zařízení. ID je přímo u tagu <strong>line</strong> jako <strong>connection</strong> ve formátu &quot;ROUTER1_ID ROUTER2_ID&quot;.</p>
+      <table width="416" height="100 border=" border="1"" cellpadding="5" cellspacing="0" bgcolor="#FFFFFF"1>
+        <tr>
+          <td width="399" height="100" class="code">&lt;line connection=&quot;ROUTER1 ROUTER2&quot;&gt;<br>
+&nbsp;&nbsp;&lt;ltype&gt;1&lt;/ltype&gt;<br>
+&nbsp;&nbsp;&lt;<span class="style4">ltitle</span>&gt;1&lt;/<span class="style4">ltitle</span>&gt;<br>
+&nbsp;&nbsp;&lt;lineurl&gt;http://router1/stats/wlan1.htm&lt;/lineurl&gt;<br>
+&nbsp;&nbsp;&lt;underconst&gt;true&lt;/underconst&gt;<br>
+&lt;/line&gt;</td>
+        </tr>
+      </table>      
+      <p class="normal">O tom jak linku připojit na konkrétní interface je pojednáno v <a href="#chap5">části 5</a>. </p>      <p class="normal"><a href="#top">Zpět</a></p>      </td>
+  </tr>
+  <tr>
+    <td><p class="normal"><strong><a name="chap4" id="chap4"></a>4) Paralelní linky </strong></p>
+    <p class="normal">Netmon umožňuje definovat více linek mezi dvěma routery. V tomto případě musí být obě linky v konfiguračním soubory  za sebou.</p>
+    <p class="normal">Příklad:</p>
+    <table width="416" height="100 border=" border="1"" cellpadding="5" cellspacing="0" bgcolor="#FFFFFF"1>
+      <tr>
+        <td width="399" height="100" class="code">...<br>          &lt;line connection=&quot;ROUTER1 ROUTER2&quot;&gt;<br>
+&nbsp;&nbsp;&lt;ltype&gt;1&lt;/ltype&gt;<br>
+&nbsp;&nbsp;&lt;<span class="style4">ltitle</span>&gt;1&lt;/<span class="style4">ltitle</span>&gt;<br>
+&nbsp;&nbsp;&lt;lineurl&gt;http://10.26.128.5/stats/wlan1.htm&lt;/lineurl&gt;<br>
+&lt;/line&gt;<br>
+...<br>
+&lt;line connection=&quot;ROUTER1 ROUTER2&quot;&gt;<br>
+&nbsp;&nbsp;&lt;ltype&gt;1&lt;/ltype&gt;<br>
+&nbsp;&nbsp;&lt;<span class="style4">ltitle</span>&gt;2&lt;/<span class="style4">ltitle</span>&gt;<br>
+&nbsp;&nbsp;&lt;lineurl&gt;http://10.26.128.5/stats/wlan2.htm&lt;/lineurl&gt;<br>
+&lt;/line&gt;<br>
+...</td>
+      </tr>
+    </table>    
+    <p class="normal">V tomto případě se natáhnou mezi routery ROUTER1 a 2 dvě linky. Současná verze podporuje až dvě paralelní linky. Definicie linek již nemusí být IHNED za sebou jako v předchozí verzi a ani nezáleží na pořadí, duležité je, aby obě linky měly stejné názvy routerů (včetně pořadí). </p>
+    <p class="normal"><a href="#top">Zpět</a></p></td>
+  </tr>
+  <tr>
+    <td><p class="normal"><strong><a name="chap5" id="chap5"></a>5) Router s více rozhraními</strong></p>
+    <p class="normal">Router může mít nyní více síťových rozhraní, které jsou použity u linek (viz. dále <strong></strong>). Obecně se rozhraní definuje takto:</p>
+    <table width="601" height="155" border="1" cellpadding="5" cellspacing="0" bgcolor="#FFFFFF">
+      <tr>
+        <td width="587" height="153" class="code"><p>&lt;router routerID=&quot;JMENOZARIZENI&quot;&gt;<br>
+&nbsp;&nbsp;...<br>
+&nbsp;&nbsp;&lt;interfaces&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;interface&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;name&gt;eth0&lt;/name&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ip&gt;48.2.1.8&lt;/ip&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/interface&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...dalsi rozhrani... <br>
+&nbsp;&nbsp;&lt;/interfaces&gt;<br>
+&nbsp;&nbsp;...<br>
+&lt;/router&gt;</p></td>
+      </tr>
+    </table>
+    <p align="justify" class="normal">Takto jsme definovali rozhraní <strong>eth0</strong> s požadovanou IP adresou. Aby konfigurační soubor byl zpětně kompatibilní, umožňuje nechat tag IP i vně tagu <strong>interfaces</strong> (prostě tak jak to bylo). V tomto případě se vytvoří <strong>default</strong> rozhraní (bezejmenné). Toto rozhraní se vytvoří i tak, že při definici nového rozhraní vynecháte jméno (čili tag <strong>name</strong>). Default rozhraní je důležité pokud nechcete explicitně vyjadřovat na které rozhraní je linka připojena. Z toho plyne, že starý konfigurační soubor bude fungovat beze změn tak, že každý router bude mít jedno default rozhraní a linky spojí právě tyto rozhraní. </p>
+    <p class="normal">Router, na který je linka připojena, nyní může mít více rozhraní. K těm se přistupuje přes operátor &quot;:&quot; (dvojtečka). Například:</p>
+    <table width="416" height="100 border=" border="1"" cellpadding="5" cellspacing="0" bgcolor="#FFFFFF"1>
+      <tr>
+        <td width="399" height="100" class="code">&lt;line connection=&quot;ROUTER1:eth0 ROUTER2:eth1&quot;&gt;<br>
+&nbsp;&nbsp;&lt;ltype&gt;1&lt;/ltype&gt;<br>
+&nbsp;&nbsp;&lt;<span class="style4">ltitle</span>&gt;1&lt;/<span class="style4">ltitle</span>&gt;<br>
+&nbsp;&nbsp;&lt;lineurl&gt;http://router1/stats/wlan1.htm&lt;/lineurl&gt;<br>
+&lt;/line&gt;</td>
+      </tr>
+    </table>
+    <p class="normal">Předpoklad je, že router <strong>ROUTER1</strong> má rozhraní <strong>eth0</strong> a <strong>ROUTER2</strong> rozhraní <strong>eth1</strong>. Pokud neuvedete žádné rozhraní, použije se default rozhraní. Díky tomu je konfigurační soubor zpětně kompatibilní a nemusíte všechny rozhraní explicitně pojmenovat.</p>
+    <p class="normal">Pro kontrolu je dobré použít parametr <em>verbose</em> (--v), zde je totiž vidět které rozhraní se testuje. </p>
+    <p class="normal"><strong>Zobrazení IP adresy na routeru</strong><br>
+      Pokud má router definovaný default rozhraní, zobrazí se jeho IP (samozřejmě pokud je povoleno), v opačném případě se zobrazí IP jeho prvního rozhraní.</p>
+    <p class="normal"><strong>Chybové stavy: </strong></p>
+    <p class="normal">Pokud  konfigurátor připojí linku na rozhraní, které není definované v tagu <strong>router</strong>, program vypíše chybu a skončí. <br>
+        <br>
+  Pokud se pokusí připojit na default rozhraní a toto rozhraní daný router nemá (čili všechna jeho rozhraní mají jména a vnější tag ip není použit), program vypíše varování a linku připojí na první definované rozhraní (to pojmenované).</p>
+    <p class="normal"><a href="#top">Zpět</a></p></td>
+  </tr>
+  <tr>
+    <td><p class="normal"><strong><a name="chap6" id="chap6"></a>6) Ampersand v XML souboru</strong></p>
+    <p class="normal">Protože XML parser použitý v netmonu si z neznámých důvodů neporadí se znakem ampersand (&amp;) a to ani ve formě konstanty, použil jsem speciální sekvenci &quot;<strong>;amp</strong>&quot;, která je při parsingu nahrazena právě tímto znakem. </p>
+    <p class="normal">Příklad, do XML souboru zapište cestu v tomto formátu:</p>
+    <table width="416" height="100 border=" border="1"" cellpadding="5" cellspacing="0" bgcolor="#FFFFFF"1>
+      <tr>
+        <td width="399" height="100" class="code">&lt;line connection=&quot;ROUTER1:eth0 ROUTER2:eth1&quot;&gt;<br>
+&nbsp;&nbsp;&lt;ltype&gt;1&lt;/ltype&gt;<br>
+&nbsp;&nbsp;&lt;<span class="style4">ltitle</span>&gt;1&lt;/<span class="style4">ltitle</span>&gt;<br>
+&nbsp;&nbsp;&lt;lineurl&gt;http://router1/stats/wlan1.htm?haf=1;ampmnau=2&lt;/lineurl&gt;
+&lt;/line&gt;</td>
+      </tr>
+    </table>    
+    <p class="normal">Výše uvedená cesta bude v programu interpretována jako &quot;<span class="code">http://router1/stats/wlan1.htm?haf=1&amp;mnau=2</span>&quot;.<br>
+      <br>
+      <a href="#top">
+    Zpět</a></p></td>
+  </tr>
+  <tr>
+    <td><p class="normal"><strong><a name="chap07" id="chap07"></a>7) Křížení linek </strong></p>
+      <p class="normal">Během hledání cest se může stát, že některé linky překříží již inku existující. Algoritmus není neomylný a pokud je alternativní cesta příliš složitá, raději zvolí křížení. </p>
+    <p class="normal"><strong>Jak se toho zbavit?</strong><br>
+      Nejlépe změnit pořadí linek v konfiguračním souboru, aby se linka která kříží jinou linku, vypočítavala dříve. Pak se s velkou pravděpodností druhá linka přepočítá zcela jinak. </p>
+    <p class="normal"><a href="#top">Zpět</a></p></td>
+  </tr>
+  <tr>
+    <td><p class="normal"><strong><a name="chap08" id="chap08"></a>8) Definice sdružených zařízení </strong></p>
+      <p class="normal">Netmon umožňuje barevně odlišit skupinu zařízení pomocí sdružování. Objekt pro sdružení se nachází v části <strong>clouds</strong> za definici zařízení a má následující parametry:</p>
+      <table width="529" border="1" cellpadding="3" cellspacing="0">
+        <tr bgcolor="#00CCFF" class="normal">
+          <th width="85" scope="col">Název tagu </th>
+          <th width="426" scope="col">Význam</th>
+          <th width="426" scope="col">Povinný a výchozí hodnota</th>
+        </tr>
+        <tr class="normal">
+          <td class="code">cborder</td>
+          <td><p>Barva okraje boxu ve formátu RGB. Pokud je tento tag vynechán, box je bez okraje. </p></td>
+          <td><div align="center">ne, bez okraje </div></td>
+        </tr>
+        <tr class="normal">
+          <td class="code">ccolor</td>
+          <td>Barva boxu ve formátu RGB. </td>
+          <td><div align="center">ne, žlutá barva </div></td>
+        </tr>
+        <tr class="normal">
+          <td><span class="style4">cedge</span></td>
+          <td>Šířka okraje boxu v pixelech. </td>
+          <td><div align="center">ne, 7 pixelů </div></td>
+        </tr>
+      </table>      
+          
+      <p class="normal">Zařízení, které spadají do daného boxu jsou definovány jako atribut routers a následuje seznam ID všech zařízení.<br>
+        <br>
+      Příklad: </p>
+      <table width="416" height="100 border=" border="1"" cellpadding="5" cellspacing="0" bgcolor="#FFFFFF"1>
+        <tr>
+          <td width="399" height="100" class="code">&lt;clouds&gt;<br>
+&nbsp;&nbsp;&lt;cloud routers=&quot;ROUTER1 ROUTER2&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;cborder&gt;0 0 0&lt;/cborder&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;ccolor&gt;230 255 200&lt;/ccolor&gt; <br>
+&nbsp;&nbsp;&lt;/cloud&gt;<br>
+&nbsp;&nbsp;&lt;cloud routers=&quot;ROUTER3 ROUTER4&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;cborder&gt;0 0 0&lt;/cborder&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;ccolor&gt;190 240 255&lt;/ccolor&gt; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;cedge&gt;8&lt;/cedge&gt; <br>
+&nbsp;&nbsp;&lt;/cloud&gt;<br>
+&nbsp;&nbsp;&lt;cloud routers=&quot;ROUTER5 ROUTER6 ROUTER7&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;cborder&gt;0 0 0&lt;/cborder&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;ccolor&gt;255 240 190&lt;/ccolor&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;cedge&gt;7&lt;/cedge&gt; <br>
+&nbsp;&nbsp;&lt;/cloud&gt; <br>
+&lt;/clouds&gt;</td>
+        </tr>
+      </table>      
+    <p class="normal"><a href="#top">Zpět</a></p></td>
+  </tr>
+</table>
+</body>
+</html>
